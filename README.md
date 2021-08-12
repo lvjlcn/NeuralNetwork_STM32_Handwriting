@@ -6,7 +6,7 @@ A simple neural network run on stm32 F407 using the DSP libaray.  <br>
  LCD controlor: ili9341   <br>
  Touch: XPT2046   <br>
  
-## NeralNetWork structure
+## NeuralNetWork structure
  input Layer  28*28 pixel 784 nodes  <br>
  lay2   30 nodes         <br>
  lay3    10 nodes         <br>
