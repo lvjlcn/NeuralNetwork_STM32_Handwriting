@@ -11,6 +11,6 @@ A simple neural network run on stm32 F407 using the DSP libaray.
  lay2   30 nodes
  lay3    10 nodes
  
-##Fit tools  
+## Fit tools  
   tensorflow keras 
 
