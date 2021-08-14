@@ -927,8 +927,9 @@ int fputc(int ch, FILE *f)
 	return ch;
 }
 
-void Draw_ResetStr(void)
+void Draw_ResetButtn(void)
 {
+       ILI9341_DrawRectangle(5, 260, 225, 50,0);
 	ILI9341_DispString_EN(110,290,"RESET"); 
 }
 
@@ -999,18 +1000,6 @@ static void MX_NVIC_Init(void)
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 }
 
-/* USER CODE BEGIN PFP */
-void TP_Draw_Big_Point(u16 x,u16 y,u16 color)
-{
-	CurrentTextColor=color;
-	ILI9341_SetPointPixel(x,y);//??? 
-	ILI9341_SetPointPixel(x+1,y);
-	ILI9341_SetPointPixel(x,y+1);
-	ILI9341_SetPointPixel(x+1,y+1);
-	//for(i=x-3;i<x+4;i++)
-		//for(j=y-3;j<y+4;j++)
-			//LCD_DrawPoint(i,j);
-}						  
 
 /* USER CODE END PFP */
 
@@ -1029,7 +1018,7 @@ int main(void)
     u32 i;
     u8 res=0;
     char tempstr[30]={0};
-    int aa1=0,aa2=0;
+    int X_width=0,Y_width=0;
     u32 pressT=0;
   /* USER CODE END 1 */
 
@@ -1063,26 +1052,22 @@ int main(void)
 	CurrentBackColor = YELLOW;
 
     ILI9341_Init();
-    ILI9341_GramScan ( 0 );
+    ILI9341_GramScan (0);
     ILI9341_Clear(0, 0, 240, 320);
     ILI9341_Clear(0, 0, 240, 320);
-// 	POINT_COLOR=RED;
 
     XPT2046_Init();
-//    XPT2046_Touch_Calibrate(0);
-//	ILI9341_GramScan ( 3 );	
- 	Draw_ResetStr();
+//    XPT2046_Touch_Calibrate(3);
+
+ 	Draw_ResetButtn();
 
 	ILI9341_DrawRectangle(REG_LEFT, REG_LEFT, REG_RIGHT, REG_RIGHT,0);
-//    Palette_Init(LCD_SCAN_MODE);
-//	LCD_DrawRectangle(30, 30, 199, 199);
-   ILI9341_DrawRectangle(5, 260, 225, 50,0);
+      ILI9341_DrawRectangle(5, 260, 225, 50,0);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-//  LCD_DispStr(20,20,"Haha",RED);
   while (1)
   {
     /* USER CODE END WHILE */
@@ -1092,26 +1077,27 @@ int main(void)
 		{	
 				if(cinfo.x>5 && cinfo.x<250 && cinfo.y>250 && cinfo.y<310) /* reset button */
 				{					
-			        ILI9341_Clear(0, 0, 240, 320);
-					Draw_ResetStr();
+			             ILI9341_Clear(0, 0, 240, 320);
+					
 					ILI9341_DrawRectangle(REG_LEFT, REG_LEFT, REG_RIGHT, REG_RIGHT,0);
-					ILI9341_DrawRectangle(5, 260, 225, 50,0);
+					Draw_ResetButtn();
+					
 					
 				}
 				else 
 				{
 					pressT=1;
-					for(aa1=-5;aa1<=5;aa1+=1)
+					for(X_width=-5;X_width<=5;X_width+=1)
 					{
-						for(aa2=-5;aa2<=5;aa2+=1)
+						for(Y_width=-5;Y_width<=5;Y_width+=1)
 						{
-							TP_Draw_Big_Point(cinfo.x+aa1,cinfo.y+aa2,BLUE);
 							
-							image[(cinfo.x+aa1)/MUTILP][(cinfo.y+aa2)/MUTILP] = 1;
+							ILI9341_SetPointPixel(cinfo.x+X_width,cinfo.y+Y_width);
+							image[(cinfo.x+X_width)/MUTILP][(cinfo.y+Y_width)/MUTILP] = 1;
 						}
 					}	
                                  continue;
-					//LCD_DrawUniLineCircle(cinfo.x,cinfo.y,cinfo.x+1,cinfo.y+1,4);
+					
 					
 				}
 			
@@ -1148,10 +1134,9 @@ int main(void)
 			}
 
 			res=findMax(py3);
-		    sprintf(tempstr,"%d",res);
-		    printf(tempstr);
+            sprintf(tempstr,"%d",res);
+            printf(tempstr);
 			ILI9341_DispString_EN(10,240,tempstr);
-			//ILI9341_DispChar_CH(100,240,res); 
 			res=0;
 		    ClearImageArray();
 						
